@@ -2,6 +2,9 @@ from flask import Flask, session, render_template, Response, request, request, u
 # from generate_content import *
 import re
 
+app = Flask(__name__)
+TEMPLATES_AUTO_RELOAD = True
+
 @app.route('/', methods=('GET', 'POST'))
 def index():
     if request.method == 'POST':

@@ -47,7 +47,7 @@ response = openai.chat.completions.create(
 stage = response
 print("GPT thinks the stage is at: ", stage)
 
-prompt = "What do you think about the hunger games"
+prompt = "Tell me more about you."
 
 response = openai.chat.completions.create(
   model="gpt-3.5-turbo",
@@ -58,10 +58,10 @@ response = openai.chat.completions.create(
   ]
 ).choices[0].message.content
 
-roleplaying = "Katniss"
+roleplaying = "Katniss" # Themselves and not a character in the book
 print("The user is roleplaying as ", roleplaying)
 
-character = "Rue"
+character = "Peeta"
 print("The user is talking to ", character)
 
 print(roleplaying + " says to " + character + ": ", prompt)
@@ -71,7 +71,7 @@ response = openai.chat.completions.create(
   messages=[
     {"role": "system", "content": "You will help us find how a character would view the user as another character"},
     {"role": "assistant", "content": "The book is " + book_name + ". The reader is at this stage of the story: " + stage + ". The user is roleplaying as " + roleplaying + " and we want to know how " + character + " would feel about the user's character."},
-    {"role": "user", "content": "Give a one very short sentence response that describes exactly how " + character + " feels about " + roleplaying + ". Do not include hateful or extreme emotions. Be children-friendly with your answer. If the user is roleplaying as a character outside the book, then give a positive response. If " + character + " and " + roleplaying + " are the same person, then tell us how they feel about themselves."}
+    {"role": "user", "content": "Give a one very short sentence response that describes exactly how " + character + " feels about " + roleplaying + ". Do not include hateful or extreme emotions. Be children-friendly with your answer. If the user is roleplaying as a character outside the book, such as themselves, then always give a positive response."}
   ]
 ).choices[0].message.content
 
@@ -83,7 +83,7 @@ response = openai.chat.completions.create(
   messages=[
     {"role": "system", "content": "You will roleplay as " + character + " in " + book_name + " to respond to the user at a specified part of the story: " + stage + ". If " + roleplaying + " and " + character + " are the same person, then give a monologue from their perspective."},
     {"role": "assistant", "content": "The book is " + book_name + ". The reader is at this stage of the story: " + stage + ". The user is roleplaying as " + roleplaying + ". " + character + " feels this way towards " + roleplaying + ": " + feeling},
-    {"role": "user", "content": "Give a response to " + roleplaying + " saying '" + prompt + "' to " + character + ". The response is what the character you are roleplaying as would say at this point in the story. Make this one or two sentences response. Do not mention your own name in the response, and stay in character. Always stay in character even if you cannot answer the question fully. Only give the sentence that the character says. When addressing the user, address them as who they are and not as a random character. Respond according to how " + character + " feels about " + roleplaying + ", for example if they are friendly then be friendly, and be unfriendly if the feeling is unfriendly. The response should be in first-person perspective from " + character + " answering to user as " + roleplaying + ". Always and only provide the reply from " + character + ". If you cannot provide a response, then just say you have no opinions on this topic or you have no interest to respond. If the story has not progressed enough to have a lore-friendly answer, then say no opinions on this matter."}
+    {"role": "user", "content": "Give a response to " + roleplaying + " saying '" + prompt + "' to " + character + ". The response is what the character you are roleplaying as would say at this point in the story. Make this one to three sentences response. Do not mention your own name in the response, and stay in character. Always stay in character even if you cannot answer the question fully. Only give the sentence that the character says. When addressing the user, address them as who they are and not as a random character. Respond according to how " + character + " feels about " + roleplaying + ", for example if they are friendly then be friendly, and be unfriendly if the feeling is unfriendly. The response should be in first-person perspective from " + character + " answering to user as " + roleplaying + " Always. Always and only provide the reply from " + character + ". If you cannot provide a response, then just say you have no opinions on this topic or you have no interest to respond. If the story has not progressed enough to have a lore-friendly answer, then say no opinions on this matter. If" + roleplaying + "is themselves or someone not in the book, then be honest and give a good answer."}
   ]
 ).choices[0].message.content # If " + character + "is friendly towards " + roleplaying + " then be friendly, if not friendly then be act according to how you feel
 
