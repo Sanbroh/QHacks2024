@@ -7,13 +7,13 @@ import re
 os.environ["OPENAI_API_KEY"] = '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'
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# book_text = parser.from_file('hungergames.pdf')
+# book_text = parser.from_file('hamlet.pdf')
 #
-# with open("book2.txt", "w+") as f:
-#     f.write("content = ")
+# with open("book.txt", "w+") as f:
+#     f.write(" ")
 #     json.dump({"book": book_text}, f)
 
-with open('book2.txt') as f:
+with open('book.txt') as f:
     book_text = json.load(f)
     book_text = book_text["book"]["content"]
     book_text = ' '.join(book_text.split())
@@ -47,7 +47,7 @@ response = openai.chat.completions.create(
 stage = response
 print("GPT thinks the stage is at: ", stage)
 
-prompt = "Tell me more about you."
+prompt = "Thus twice before, and jump at this dead hour, With martial stalk hath he gone by our watch."
 
 response = openai.chat.completions.create(
   model="gpt-3.5-turbo",
@@ -58,10 +58,10 @@ response = openai.chat.completions.create(
   ]
 ).choices[0].message.content
 
-roleplaying = "Katniss" # Themselves and not a character in the book
+roleplaying = "Harry Potter" # Themselves and not a character in the book
 print("The user is roleplaying as ", roleplaying)
 
-character = "Peeta"
+character = "Marcellus"
 print("The user is talking to ", character)
 
 print(roleplaying + " says to " + character + ": ", prompt)
@@ -83,7 +83,7 @@ response = openai.chat.completions.create(
   messages=[
     {"role": "system", "content": "You will roleplay as " + character + " in " + book_name + " to respond to the user at a specified part of the story: " + stage + ". If " + roleplaying + " and " + character + " are the same person, then give a monologue from their perspective."},
     {"role": "assistant", "content": "The book is " + book_name + ". The reader is at this stage of the story: " + stage + ". The user is roleplaying as " + roleplaying + ". " + character + " feels this way towards " + roleplaying + ": " + feeling},
-    {"role": "user", "content": "Give a response to " + roleplaying + " saying '" + prompt + "' to " + character + ". The response is what the character you are roleplaying as would say at this point in the story. Make this one to three sentences response. Do not mention your own name in the response, and stay in character. Always stay in character even if you cannot answer the question fully. Only give the sentence that the character says. When addressing the user, address them as who they are and not as a random character. Respond according to how " + character + " feels about " + roleplaying + ", for example if they are friendly then be friendly, and be unfriendly if the feeling is unfriendly. The response should be in first-person perspective from " + character + " answering to user as " + roleplaying + " Always. Always and only provide the reply from " + character + ". If you cannot provide a response, then just say you have no opinions on this topic or you have no interest to respond. If the story has not progressed enough to have a lore-friendly answer, then say no opinions on this matter. If" + roleplaying + "is themselves or someone not in the book, then be honest and give a good answer."}
+    {"role": "user", "content": "Give a response to " + roleplaying + " saying '" + prompt + "' to " + character + ". The response is what the character you are roleplaying as would say at this point in the story. Make this one to three sentences response. Do not mention your own name in the response, and stay in character. Always stay in character even if you cannot answer the question fully. Only give the sentence that the character says, do not add quotation marks. When addressing the user, address them as who they are and not as a random character. Respond according to how " + character + " feels about " + roleplaying + ", for example if they are friendly then be friendly, and be unfriendly if the feeling is unfriendly. The response should be in first-person perspective from " + character + " answering to user as " + roleplaying + " Always. Always and only provide the reply from " + character + ". If you cannot provide a response, then just say you have no opinions on this topic or you have no interest to respond. If the story has not progressed enough to have a lore-friendly answer, then say no opinions on this matter. If" + roleplaying + "is themselves or someone not in the book, then be honest and give a good answer."}
   ]
 ).choices[0].message.content # If " + character + "is friendly towards " + roleplaying + " then be friendly, if not friendly then be act according to how you feel
 
@@ -96,11 +96,11 @@ response = openai.chat.completions.create(
 #   ]
 # ).choices[0].message.content
 try:
-    response = re.findall('"(\D+)"',response)[0]
+    response = re.findall('"(\D+)"', response)[0]
 except:
     response = response
 
-print(response)
+print("'" + response + "'")
 
 # def get_ai_response(prompt:str, api_key:str):
 #     openai.api_key = api_key

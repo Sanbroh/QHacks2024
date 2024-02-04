@@ -5,9 +5,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" href="{{ url_for('static',filename='styles/base.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static',filename='styles/decktemplates.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static',filename='styles/styles.css') }}">
   <script src="{{ url_for('static',filename='js/script.js') }}"></script>
+
+  {% block script %}{% endblock %}
 
   <!-- JS Dependencies -->
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>

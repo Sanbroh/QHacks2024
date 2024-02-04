@@ -1,9 +1,13 @@
 from flask import Flask, session, render_template, Response, request, request, url_for, flash, redirect
-# from generate_content import *
+from extract_paragraphs import *
 import re
 
 app = Flask(__name__)
-TEMPLATES_AUTO_RELOAD = True
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+
+appName = "Journey"
+
+pages = split_pdf("harrypotter.pdf")
 
 @app.route('/', methods=('GET', 'POST'))
 def index():
@@ -13,7 +17,7 @@ def index():
     elif request.method == 'GET':
         pass
 
-    return render_template('index.html')
+    return render_template('index.html', appName=appName, pages=pages)
 
 if __name__ == "__main__":
   app.run(debug=True)

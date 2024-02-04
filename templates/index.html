@@ -1,6 +1,53 @@
 {% extends 'base.html' %}
+{% block script %}
+  <script>
+    var pages = {{ pages|tojson }};
+    console.log(pages);
+  </script>
+{% endblock %}
+
 {% block content %}
-  <div>
-    Hello World
+  <div class="container">
+    <div id="container-nav" class="sub-container" style="grid-area: nav;">
+
+    </div>
+    <div id="container-char" class="sub-container" style="grid-area: left;">
+
+    </div>
+    <div id="container-text" class="sub-container" style="grid-area: center;">
+      <div id="text-space" class="sub-subcontainer" style="grid-area: text;">
+        <div id="default-text-space-item">
+          <div id="default-text-bubble-left" class="text-bubble text-bubble-left">
+            <img class="text-bubble-img" src="1" />
+            <div class="text-bubble-txt">
+              <p>Character Name</p>
+              <p>THIS IS A SENTENCE THAT THE CHARACTER IS SAYING...</p>
+            </div>
+          </div>
+          <div id="default-text-bubble-right" class="text-bubble text-bubble-right">
+            <div class="text-bubble-txt">
+              <p>Character Name</p>
+              <p>THIS IS A SENTENCE THAT THE CHARACTER IS SAYING...</p>
+            </div>
+            <img class="text-bubble-img" src="1" />
+          </div>
+          <div id="default-text-bubble-center" class="text-bubble text-bubble-center">
+            <div class="text-bubble-txt">
+              <p>Character Name</p>
+              <p>THIS IS A SENTENCE THAT THE CHARACTER IS SAYING...</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+      <div id="action-space" class="sub-subcontainer" style="grid-area: action;">
+        <button id="page-button-left" class="page-button" onclick="prevPage();">←</button>
+        <button id="page-button-right" class="page-button" onclick="nextPage();">→</button>
+      </div>
+    </div>
+    <div id="container-sel" class="sub-container" style="grid-area: right;">
+
+    </div>
   </div>
 {% endblock %}
