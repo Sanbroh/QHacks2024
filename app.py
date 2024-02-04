@@ -10,7 +10,7 @@ appName = "Journey"
 
 pages = split_pdf("hungergames.pdf")
 
-os.environ["OPENAI_API_KEY"] = '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'
+os.environ["OPENAI_API_KEY"] = 'API_KEY_GOES_HERE'
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # book_text = parser.from_file('harrypotter.pdf')
