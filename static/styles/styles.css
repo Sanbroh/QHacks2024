@@ -187,6 +187,7 @@ body {
   margin-bottom: 20px;
 
   opacity: 75%;
+  cursor: pointer;
 }
 
 .text-bubble:hover {

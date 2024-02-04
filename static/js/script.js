@@ -27,6 +27,41 @@ window.onload = function() {
   resetChar();
 }
 
+function makeid(length) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+    return result;
+}
+
+function textToSpeech(elm) {
+  var char = elm.getElementsByClassName("text-bubble-txt")[0].children[0].innerHTML;
+  try {
+    char = char.split("(")[0];
+  } catch {
+    char = char.split("-")[0];
+  }
+  var mode = "audio";
+  var msg = elm.getElementsByClassName("text-bubble-txt")[0].children[1].innerHTML;
+  var filename = makeid(8);
+  var character = char;
+
+  var url = "/get_response?" + new URLSearchParams({filename, mode, msg, character});
+  fetch(url, {
+    "method": "GET"
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+    new Audio('/static/audio/' + filename + '.mp3').play();
+  });
+}
+
 function getChar() {
   var context = document.getElementById("text-space-item-" + currPage);
   for (let i = 0; i < context.children.length; i++) {
@@ -119,7 +154,7 @@ function sendMessage() {
     }
   }
 
-  var roleplaying = "Themselves and not a character in the book";
+  var roleplaying = "User";
 
   var mode = "response"
   var url = "/get_response?" + new URLSearchParams({context, character, roleplaying, msg, mode})
@@ -129,7 +164,8 @@ function sendMessage() {
   .then(response => response.json())
   .then(data => {
     console.log(data.json);
-    postMessage(data, character + " (to You)", -1, "left", "text-space-item-" + currPage);
+    var elm = postMessage(data, character + " (to You)", -1, "left", "text-space-item-" + currPage);
+    textToSpeech(elm);
     textSpace.scrollTop = textSpace.scrollHeight;
   });
 }
@@ -160,6 +196,8 @@ function postMessage(text, char, img, align, textspace) {
   elm.style.display = "block";
 
   textSpace.scrollTop = textSpace.scrollHeight;
+
+  return elm;
 }
 
 function newTextSpace(textSpaceCount) {

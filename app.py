@@ -1,5 +1,6 @@
 from flask import Flask, session, render_template, Response, request, request, url_for, flash, redirect, jsonify
 from extract_paragraphs import *
+from pathlib import Path
 import re
 
 app = Flask(__name__)
@@ -7,7 +8,7 @@ app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 appName = "Journey"
 
-pages = split_pdf("harrypotter.pdf")
+pages = split_pdf("hungergames.pdf")
 
 os.environ["OPENAI_API_KEY"] = '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'
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -18,7 +19,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 #     f.write(" ")
 #     json.dump({"book": book_text}, f)\
 
-with open('book.txt', encoding='utf-8') as f:
+with open('book2.txt', encoding='utf-8') as f:
         book_text = json.load(f)
         book_text = book_text["book"]["content"]
         book_text = ' '.join(book_text.split())
@@ -228,7 +229,7 @@ def getCharacters(send_text):
       messages=[
         {"role": "system", "content": "You are helping us find which characters have showed up in the book at this point in the story."},
         {"role": "assistant", "content": "The book is " + book_name + ". The reader is at this stage of the story: " + stage},
-        {"role": "user", "content": "The user has just read up to: " + context + ". Give the list of characters present at this stage of the story only, meaning that characters that have left the scene but may come back later do not count toward this list. Give the list in the format of a Python list, which is the list of names separated by commas. Each name is only one word and is capitalized. Also output whether or not a list was successfully generated in the format of True or False. Do not surround Python list elements with quotation marks. The output should be in the format of [list], True or False for list check. Provide only the output and nothing else extra such as words or sentences. ONLY provide the output in the format asked."}
+        {"role": "user", "content": "The user has just read up to: " + context + ". Give the list of characters present at this stage of the story only, meaning that characters that have left the scene but may come back later do not count toward this list. Give the list in the format of a Python list, which is the list of names separated by commas. Each name is only one word and is capitalized. Also output whether or not a list was successfully generated in the format of True or False. Do not surround Python list elements with quotation marks. The output should be in the format of [list], True or False for list check. Provide only the output and nothing else extra such as words or sentences. ONLY provide the output in the format asked, the list must follow a python list format. Even if there are only one or two characters, still put them in a list."}
       ]
     ).choices[0].message.content
 
@@ -287,6 +288,51 @@ def getBackgroundPrompt(send_text):
 
     return response
 
+def generateTTS(character, file_name, prompt):
+    speech_file_path = f"./static/audio/{file_name}.mp3"
+    print(speech_file_path)
+    input = book_text[0:3000]
+
+    response = openai.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "system", "content": "You are helping us to find the name of the book based on the prompt."},
+        {"role": "assistant", "content": input},
+        {"role": "user", "content": "What book is this? Give only the book title and nothing else."}
+    ]
+    ).choices[0].message.content
+
+    book_name = response
+    print("Book Name: ", book_name)
+
+    response = openai.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "system", "content": "Determine if the character provided in the book is a female or male, then choose an output accordingly."},
+        {"role": "assistant", "content": "The book is " + book_name},
+        {"role": "user", "content": "the character in the book is: " + character + ". Output nova if this is a female, and output alloy if not, and check the following: If the character is male and british, output fable. If the character is a young girl, output shimmer. If the character is powerful and male, output echo. Only output in all lowercase. Do not output anything extra other than the singular word output."}
+    ]
+    ).choices[0].message.content
+
+    print(response)
+    print(prompt)
+
+    if response not in ["alloy", "nova", "fable", "shimmer", "shimmer", "echo"]:
+        response = "alloy"
+
+    # TTS
+    response = openai.audio.speech.create(
+      model="tts-1",
+      voice=response,
+      input=prompt
+    )
+
+    #writes to file
+    with open(speech_file_path, "wb") as f:
+        f.write(response.content)
+
+    return "Success in creating audio!"
+
 @app.route('/', methods=('GET', 'POST'))
 def index():
     return render_template('index.html', appName=appName, pages=pages)
@@ -318,6 +364,11 @@ def get_response():
         elif mode == "chars":
             context = request.args["context"]
             result = getCharacters(context)
+        elif mode == "audio":
+            prompt = request.args["msg"]
+            char = request.args["character"]
+            file_name = request.args["filename"]
+            result = generateTTS(char, file_name, prompt)
 
         return jsonify(result)
 
